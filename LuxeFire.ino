@@ -47,6 +47,38 @@ void loop() {
   //delay(2);
 }
 
+void colorFade(uint16_t pixel, uint32_t clrStart, uint32_t clrEnd, uint8_t iStep, uint8_t iNumSteps)
+{
+  uint8_t clrRedStart = 0;
+  uint8_t clrGrnStart = 0;
+  uint8_t clrBluStart = 0;
+  uint8_t clrRedEnd = 0;
+  uint8_t clrGrnEnd = 0;
+  uint8_t clrBluEnd = 0;
+  int clrRedStep = 0;
+  int clrGrnStep = 0;
+  int clrBluStep = 0;
+  unpackColors(clrStart, clrRedStart, clrGrnStart, clrBluStart);
+  unpackColors(clrStart, clrRedEnd, clrGrnEnd, clrBluEnd);
+  clrRedStep = (clrRedEnd - clrRedStart) / iNumSteps;
+  clrGrnStep = (clrGrnEnd - clrGrnStart) / iNumSteps;
+  clrBluStep = (clrBluEnd - clrBluStart) / iNumSteps;
+  strip.setPixelColor(pixel, packColors((clrRedStart + (iStep * clrRedStep)), (clrGrnStart + (iStep * clrGrnStep)), (clrBluStart + (iStep * clrBluStep))));
+  //strip.show();  // Probably don't want to do this unless you aren't changing any other Neopixels each time this function is called.
+}
+
+void unpackColors(uint32_t c, uint8_t &r, uint8_t &g, uint8_t &b)
+{
+  r = (uint8_t)(c >> 16),
+  g = (uint8_t)(c >>  8),
+  b = (uint8_t)c;
+}
+
+uint32_t packColors(uint8_t r, uint8_t g, uint8_t b)
+{
+  return ((uint32_t)r << 16) | ((uint32_t)g <<  8) | b;
+}
+
 // Fill the dots one after the other with a color
 void colorWipe(uint32_t c, uint8_t wait) {
   for(uint16_t i=0; i<strip.numPixels(); i++) {
